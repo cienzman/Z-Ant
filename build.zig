@@ -550,6 +550,12 @@ fn configureStm32n6Support(
             if (err != error.FileNotFound) @panic("unexpected error probing CMSIS-DSP path");
         }
 
+        if (std.fs.cwd().access("third_party/CMSIS-DSP/PrivateInclude", .{})) |_| {
+            step.addIncludePath(b.path("third_party/CMSIS-DSP/PrivateInclude"));
+        } else |err| {
+            if (err != error.FileNotFound) @panic("unexpected error probing CMSIS-DSP PrivateInclude path");
+        }
+
         // Add ARM newlib headers so <string.h>, <math.h>, etc. are found when targeting arm-none-eabi
         if (std.fs.cwd().access("/usr/lib/arm-none-eabi/include", .{})) {
             step.addIncludePath(.{ .cwd_relative = "/usr/lib/arm-none-eabi/include" });
